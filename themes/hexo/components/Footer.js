@@ -15,13 +15,6 @@ const Footer = ({ title }) => {
       {/* <DarkModeButton/> */}
       <i className='fas fa-copyright' /> {`${copyrightDate}`}
       <span>
-        //<i className='mx-1 animate-pulse fas fa-heart' />
-        //<a
-          //href={siteConfig('LINK')}
-          //className='underline font-bold  dark:text-gray-300 '>
-          //{siteConfig('AUTHOR')}
-        //</a>
-        .<br />
         <BeiAnSite />
         <BeiAnGongAn />
         <span className='hidden busuanzi_container_site_pv'>

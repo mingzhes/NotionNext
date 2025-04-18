@@ -1,42 +1,36 @@
 import { useEffect } from 'react'
+import { siteConfig } from '@/lib/config'
+import { loadExternalResource } from '@/lib/utils'
 
 /**
- * Coze-AI机器人（新版嵌入）
- * @returns
+ * Coze-AI 聊天组件（新版SDK）
  */
 export default function Coze() {
   const cozeSrc = 'https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/cn/index.js'
-
-  const loadExternalResource = (src) => {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script')
-      script.src = src
-      script.async = true
-      script.onload = () => resolve()
-      script.onerror = () => reject(new Error(`Failed to load script: ${src}`))
-      document.head.appendChild(script)
-    })
-  }
+  const botId = siteConfig('COZE_BOT_ID')
+  const token = siteConfig('COZE_TOKEN')
+  const title = siteConfig('COZE_TITLE', 'Coze')
 
   const loadCoze = async () => {
     await loadExternalResource(cozeSrc)
     const CozeWebSDK = window?.CozeWebSDK
-    if (CozeWebSDK) {
+    if (CozeWebSDK && botId && token) {
       new CozeWebSDK.WebChatClient({
         config: {
-          bot_id: '7481240586977476659'
+          bot_id: botId
         },
         componentProps: {
-          title: 'Coze'
+          title: title,
+          autoRender: true // 自动渲染按钮
         },
         auth: {
           type: 'token',
-          token: 'pat_OOGD3gnH7qEJGR5JBA1SkIsyEY0D67c9zoMqa0rhIJNrbp8f36JuaNri5ZVsFbn0',
-          onRefreshToken: () => {
-            return 'pat_OOGD3gnH7qEJGR5JBA1SkIsyEY0D67c9zoMqa0rhIJNrbp8f36JuaNri5ZVsFbn0'
-          }
+          token: token,
+          onRefreshToken: () => token
         }
       })
+    } else {
+      console.warn('Coze SDK or config not loaded properly.')
     }
   }
 

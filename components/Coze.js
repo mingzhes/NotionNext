@@ -7,8 +7,8 @@ import { useEffect } from 'react'
 export default function Coze() {
   const cozeSrc = 'https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/cn/index.js'
 
-  const loadExternalResource = (src: string) => {
-    return new Promise<void>((resolve, reject) => {
+  const loadExternalResource = (src) => {
+    return new Promise((resolve, reject) => {
       const script = document.createElement('script')
       script.src = src
       script.async = true
@@ -27,7 +27,7 @@ export default function Coze() {
           bot_id: '7481240586977476659'
         },
         componentProps: {
-          title: 'Sam哥背词军师'
+          title: 'Coze'
         },
         auth: {
           type: 'token',

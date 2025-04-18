@@ -1,25 +1,28 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { siteConfig } from '@/lib/config'
 import { loadExternalResource } from '@/lib/utils'
 
+/**
+ * Coze-AI 聊天组件（新版SDK，支持 ?chat=true 自动展开）
+ */
 export default function Coze() {
   const cozeSrc = 'https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/cn/index.js'
   const botId = '7481240586977476659'
   const token = 'pat_MyGsMf0ZGL3Vks7K2cG01yg8joMop0KH8dk7fyLOd0UZuunNtUHlJxxXrvCN9Uo0'
   const title = siteConfig('COZE_TITLE', 'Coze')
 
-  const clientRef = useRef(null)
-
   const loadCoze = async () => {
     await loadExternalResource(cozeSrc)
+
     const CozeWebSDK = window?.CozeWebSDK
     if (CozeWebSDK && botId && token) {
-      const client = new CozeWebSDK.WebChatClient({
-        config: { bot_id: botId },
+      new CozeWebSDK.WebChatClient({
+        config: {
+          bot_id: botId
+        },
         componentProps: {
           title: title,
-          autoRender: true,
-          triggerButton: true // ✅ 关键配置
+          autoRender: true
         },
         auth: {
           type: 'token',
@@ -28,17 +31,15 @@ export default function Coze() {
         }
       })
 
-      clientRef.current = client
-
-      // ✅ 自动展开入口控制
+      // ✅ 如果 URL 中含有 chat=true，则立即展开聊天框
       if (typeof window !== 'undefined' && window.location.search.includes('chat=true')) {
         setTimeout(() => {
           try {
-            client.open() // ✅ 只有 triggerButton 为 true 才有 open 方法
+            CozeWebSDK.showChatBot()
           } catch (e) {
-            console.warn('Coze open failed:', e)
+            console.warn('CozeWebSDK.showChatBot() 调用失败', e)
           }
-        }, 500)
+        }, 800) // 延迟一点，确保 SDK 已初始化
       }
 
     } else {
@@ -52,4 +53,3 @@ export default function Coze() {
 
   return <></>
 }
-
